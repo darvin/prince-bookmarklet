@@ -20,10 +20,16 @@ function createApp() {
   });
 
   app.get('/convertPage', function (req, res) {
-    console.log("POSTED PAGE! body: ", decodeURIComponent(req.query.url));
-    res.jsonp({
-      result:"ok"
+    var srcUrl = decodeURIComponent(req.query.url);
+    console.log("POSTED PAGE! body: ", srcUrl);
+    pdfTools.convertToPdf({
+      url:srcUrl
+    }, function(err, result) {
+      res.jsonp({
+        result:"ok"
+      });
     });
+
 
   });
   bookmarkletCompile(function(err, bookmarklet, bookmarkletSource) {
