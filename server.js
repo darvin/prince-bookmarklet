@@ -3,23 +3,10 @@ var handlebars = require("node-handlebars");
 var path = require('path');
 var fs = require('fs');
 var url = require('url');
-var bookmarkleter = require('bookmarkleter');
-var browserify = require('browserify');
-var concat = require('concat-stream')
-var bodyParser = require('body-parser')
+var bookmarkletCompile = require('./lib').bookmarkletCompile;
+var pdfTools = require('./lib').pdfTools;
 
 var DEBUG = true;
-var bookmarklet = null;
-var bookmarkletSource = null;
-var concatStream = concat(function(res){
-  bookmarkletSource = res.toString('utf8');
-  bookmarklet = bookmarkleter(bookmarkletSource, {
-
-  });
-});
-browserify(["./bookmarklet-source.js"])
-  .bundle()
-  .pipe(concatStream);
 
 
 
@@ -27,10 +14,6 @@ function createApp() {
   var templateDir = path.join(__dirname, "templates");
   var app = express();
 
-  app.use( bodyParser.json() );       // to support JSON-encoded bodies
-  app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-    extended: true
-  }));
 
   var hbs = handlebars.create({
     partialsDir :path.join(templateDir, "partials")
@@ -43,29 +26,31 @@ function createApp() {
     });
 
   });
-	app.get('/', function (req, res) {
-    //console.log(browserifiedBookmarkletSource);
-    var absoluteURL = url.format({
-      protocol:req.protocol,
-      host:req.get('host'),
-      pathname:req.originalUrl
-    });
+  bookmarkletCompile(function(err, bookmarklet, bookmarkletSource) {
+    app.get('/', function (req, res) {
+      //console.log(browserifiedBookmarkletSource);
+      var absoluteURL = url.format({
+        protocol:req.protocol,
+        host:req.get('host'),
+        pathname:req.originalUrl
+      });
 
-    var bookmarkletLocalize=function(src){
-      var result = src;
-      result = src.replace(new RegExp("XXX_absoluteURL_XXX", 'g'), absoluteURL);
-      return result;
-    }
+      var bookmarkletLocalize=function(src){
+        var result = src;
+        result = src.replace(new RegExp("XXX_absoluteURL_XXX", 'g'), absoluteURL);
+        return result;
+      }
 
 
-    hbs.engine(path.join(templateDir, "index.html"), {
-        bookmarklet:bookmarkletLocalize(bookmarklet),
-        bookmarkletSource:bookmarkletLocalize(bookmarkletSource)
-    },
-      function(err, html) {
-      if (err)
-        throw err;
-      res.send(html);
+      hbs.engine(path.join(templateDir, "index.html"), {
+          bookmarklet:bookmarkletLocalize(bookmarklet),
+          bookmarkletSource:bookmarkletLocalize(bookmarkletSource)
+      },
+        function(err, html) {
+        if (err)
+          throw err;
+        res.send(html);
+      });
     });
   });
 
