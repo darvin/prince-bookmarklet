@@ -3,7 +3,19 @@ var handlebars = require("node-handlebars");
 var path = require('path');
 var fs = require('fs');
 var url = require('url');
-var bookmarkletify = require('bookmarkletify');
+var bookmarkleter = require('bookmarkleter');
+var browserify = require('browserify');
+var concat = require('concat-stream')
+
+var bookmarklet = null;
+
+var concatStream = concat(function(res){
+  bookmarklet = bookmarkleter(res.toString('utf8'));
+});
+browserify(["./bookmarklet-source.js"])
+  .bundle()
+  .pipe(concatStream);
+
 
 
 function createApp() {
@@ -15,24 +27,23 @@ function createApp() {
 
 
 	app.get('/', function (req, res) {
-
+    //console.log(browserifiedBookmarkletSource);
     var absoluteURL = url.format({
       protocol:req.protocol,
       host:req.get('host'),
       pathname:req.originalUrl
     });
 
-    hbs.engine(path.join(templateDir, "bookmarklet-source.js"), {absoluteURL:absoluteURL}, function(err, bookmarkletSource) {
+
+    var bookmarkletLocal = bookmarklet;
+
+    bookmarkletLocal = bookmarkletLocal.replace("XXX_absoluteURL_XXX", absoluteURL);
+
+    hbs.engine(path.join(templateDir, "index.html"), {bookmarklet:bookmarkletLocal},
+      function(err, html) {
       if (err)
         throw err;
-      var bookmarkletCompiled = bookmarkletify(bookmarkletSource);
-
-      hbs.engine(path.join(templateDir, "index.html"), {bookmarklet:bookmarkletCompiled},
-        function(err, html) {
-        if (err)
-          throw err;
-        res.send(html);
-      });
+      res.send(html);
     });
   });
 
