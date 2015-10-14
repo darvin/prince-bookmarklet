@@ -1,0 +1,19 @@
+{
+  "name": "prince-bookmarklet",
+  "version": "1.0.0",
+  "description": "Converts webpages to PDF with PrinceXML and pushes it to WebDAV",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/darvin/prince-bookmarklet.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/darvin/prince-bookmarklet/issues"
+  },
+  "homepage": "https://github.com/darvin/prince-bookmarklet#readme"
+}
