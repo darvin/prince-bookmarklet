@@ -42,11 +42,7 @@ function createApp() {
   bookmarkletCompile(function(err, bookmarklet, bookmarkletSource) {
     app.get('/', function (req, res) {
       //console.log(browserifiedBookmarkletSource);
-      var absoluteURL = url.format({
-        protocol:req.protocol,
-        host:req.get('host'),
-        pathname:req.originalUrl
-      });
+      var absoluteURL = "//"+req.get('host')+req.originalUrl;
 
       var bookmarkletLocalize=function(src){
         var result = src;
