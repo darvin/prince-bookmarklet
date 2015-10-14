@@ -23,11 +23,17 @@ function createApp() {
     var srcUrl = decodeURIComponent(req.query.url);
     console.log("POSTED PAGE! body: ", srcUrl);
     pdfTools.convertToPdf({
-      url:srcUrl
-    }, function(err, result) {
-      res.jsonp({
-        result:"ok"
-      });
+      url:srcUrl,
+      title:req.query.title
+    }, function(err, pdfFilePath) {
+      pdfTools.uploadFile(process.env.WEBDAV_URL,
+        process.env.WEBDAV_USERNAME, process.env.WEBDAV_PASSWORD,
+        path.basename(pdfFilePath), pdfFilePath, function(err, result) {
+          res.jsonp({
+            result:"ok",
+            err:err
+          });
+        });
     });
 
 
