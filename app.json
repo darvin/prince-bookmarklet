@@ -1,0 +1,19 @@
+{
+  "name": "Personal PDFdify",
+  "description": "Bookmarklet that runs ParseXML on webpage and pushes resulted PDF via WebDAV",
+  "repository": "https://github.com/darvin/prince-bookmarklet",
+  "logo": "https://node-js-sample.herokuapp.com/node.png",
+  "keywords": ["pdf", "prince","node"],
+  "env": {
+    "WEBDAV_USERNAME": {
+      "value": "example@boxnetuser.com"
+    },
+    "WEBDAV_PASSWORD": {
+      "value": "exampleboxnet pasword"
+    },
+    "WEBDAV_URL": {
+      "value": "https://dav.box.com/dav/FromBrowser/"
+    }
+  }
+
+}
