@@ -30,6 +30,7 @@ function createApp() {
         process.env.WEBDAV_USERNAME, process.env.WEBDAV_PASSWORD,
         path.basename(pdfFilePath), pdfFilePath, function(err, result) {
           res.jsonp({
+            filename:path.basename(pdfFilePath),
             result:"ok",
             err:err
           });
