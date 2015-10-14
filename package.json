@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/darvin/prince-bookmarklet/issues"
   },
-  "homepage": "https://github.com/darvin/prince-bookmarklet#readme"
+  "homepage": "https://github.com/darvin/prince-bookmarklet#readme",
+  "dependencies": {
+    "bookmarkletify": "^1.0.0",
+    "express": "^4.13.3",
+    "node-handlebars": "^0.9.7"
+  }
 }
