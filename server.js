@@ -6,11 +6,16 @@ var url = require('url');
 var bookmarkleter = require('bookmarkleter');
 var browserify = require('browserify');
 var concat = require('concat-stream')
+var bodyParser = require('body-parser')
 
+var DEBUG = true;
 var bookmarklet = null;
-
+var bookmarkletSource = null;
 var concatStream = concat(function(res){
-  bookmarklet = bookmarkleter(res.toString('utf8'));
+  bookmarkletSource = res.toString('utf8');
+  bookmarklet = bookmarkleter(bookmarkletSource, {
+
+  });
 });
 browserify(["./bookmarklet-source.js"])
   .bundle()
@@ -21,11 +26,23 @@ browserify(["./bookmarklet-source.js"])
 function createApp() {
   var templateDir = path.join(__dirname, "templates");
   var app = express();
+
+  app.use( bodyParser.json() );       // to support JSON-encoded bodies
+  app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+    extended: true
+  }));
+
   var hbs = handlebars.create({
     partialsDir :path.join(templateDir, "partials")
   });
 
+  app.get('/convertPage', function (req, res) {
+    console.log("POSTED PAGE! body: ", decodeURIComponent(req.query.url));
+    res.jsonp({
+      result:"ok"
+    });
 
+  });
 	app.get('/', function (req, res) {
     //console.log(browserifiedBookmarkletSource);
     var absoluteURL = url.format({
@@ -34,12 +51,17 @@ function createApp() {
       pathname:req.originalUrl
     });
 
+    var bookmarkletLocalize=function(src){
+      var result = src;
+      result = src.replace(new RegExp("XXX_absoluteURL_XXX", 'g'), absoluteURL);
+      return result;
+    }
 
-    var bookmarkletLocal = bookmarklet;
 
-    bookmarkletLocal = bookmarkletLocal.replace("XXX_absoluteURL_XXX", absoluteURL);
-
-    hbs.engine(path.join(templateDir, "index.html"), {bookmarklet:bookmarkletLocal},
+    hbs.engine(path.join(templateDir, "index.html"), {
+        bookmarklet:bookmarkletLocalize(bookmarklet),
+        bookmarkletSource:bookmarkletLocalize(bookmarkletSource)
+    },
       function(err, html) {
       if (err)
         throw err;
