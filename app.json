@@ -5,14 +5,8 @@
   "logo": "https://node-js-sample.herokuapp.com/node.png",
   "keywords": ["pdf", "prince","node"],
   "env": {
-    "WEBDAV_USERNAME": {
-      "value": "example@boxnetuser.com"
-    },
-    "WEBDAV_PASSWORD": {
-      "value": "exampleboxnet pasword"
-    },
-    "WEBDAV_URL": {
-      "value": "https://dav.box.com/dav/FromBrowser/"
+    "READABILITY_PARSER_API_KEY": {
+      "value": "examplekey"
     }
   }
 

@@ -74,8 +74,9 @@ describe('Website', function(){
           expect(receivedRequest.files.file).to.be.ok;
           var file = receivedRequest.files.file;
           expect(file.size).to.be.greaterThan(20000);
-          expect(file.name).to.equal("Portable Document Format !.pdf");
-          fs.unlinkSync(file.path);
+          expect(file.name).to.equal("Portable Document Format.pdf");
+          console.log(file.path);
+          //fs.unlinkSync(file.path);
           done(err);
         });
     });

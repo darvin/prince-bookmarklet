@@ -21,24 +21,26 @@ function createApp() {
 
   app.get('/convertPage', function (req, res) {
     var srcUrl = decodeURIComponent(req.query.url);
-    console.log("POSTED PAGE! body: ", srcUrl);
-    pdfTools.convertToPdf({
-      url:srcUrl,
-      title:req.query.title
-    }, function(err, pdfFilePath) {
-      if (req.query.onFinish.webdav)
-        pdfTools.uploadFile(
-          req.query.onFinish.webdav.url,
-          req.query.onFinish.webdav.username,
-          req.query.onFinish.webdav.password,
-          path.basename(pdfFilePath), pdfFilePath, function(err, result) {
-            res.jsonp({
-              filename:path.basename(pdfFilePath),
-              result:"ok",
-              err:err
+    pdfTools.convertToReadable(srcUrl, function(err, readableResult, cleanupFunc) {
+      pdfTools.convertToPdf({
+        input:readableResult.tempFile,
+        title:readableResult.title
+      }, function(err, pdfFilePath) {
+        if (req.query.onFinish.webdav)
+          pdfTools.uploadFile(
+            req.query.onFinish.webdav.url,
+            req.query.onFinish.webdav.username,
+            req.query.onFinish.webdav.password,
+            path.basename(pdfFilePath), pdfFilePath, function(err, result) {
+              res.jsonp({
+                filename:path.basename(pdfFilePath),
+                result:"ok",
+                err:err
+              });
             });
-          });
+      });
     });
+
 
 
   });

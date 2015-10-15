@@ -17,7 +17,5 @@ Converts webpages to PDF with PrinceXML and pushes it to WebDAV
 
 
 ```bash
-heroku config:set WEBDAV_URL=https://dav.box.com/dav/FromBrowser/
-heroku config:set WEBDAV_USERNAME=yourbox@email.com
-heroku config:set WEBDAV_PASSWORD=yourboxpassword
+heroku config:set READABILITY_PARSER_API_KEY=yourreadabilityparserapikey
 ```
