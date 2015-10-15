@@ -26,15 +26,18 @@ function createApp() {
       url:srcUrl,
       title:req.query.title
     }, function(err, pdfFilePath) {
-      pdfTools.uploadFile(process.env.WEBDAV_URL,
-        process.env.WEBDAV_USERNAME, process.env.WEBDAV_PASSWORD,
-        path.basename(pdfFilePath), pdfFilePath, function(err, result) {
-          res.jsonp({
-            filename:path.basename(pdfFilePath),
-            result:"ok",
-            err:err
+      if (req.query.onFinish.webdav)
+        pdfTools.uploadFile(
+          req.query.onFinish.webdav.url,
+          req.query.onFinish.webdav.username,
+          req.query.onFinish.webdav.password,
+          path.basename(pdfFilePath), pdfFilePath, function(err, result) {
+            res.jsonp({
+              filename:path.basename(pdfFilePath),
+              result:"ok",
+              err:err
+            });
           });
-        });
     });
 
 
