@@ -20,11 +20,11 @@ function createApp() {
   });
 
   app.get('/convertPage', function (req, res) {
-    var srcUrl = decodeURIComponent(req.query.url);
-    pdfTools.convertToReadable(srcUrl, function(err, readableResult, cleanupFunc) {
+
+    var toPdf = function (input, title, callback) {
       pdfTools.convertToPdf({
-        input:readableResult.tempFile,
-        title:readableResult.title
+        input:input,
+        title:title
       }, function(err, pdfFilePath) {
         if (req.query.onFinish.webdav)
           pdfTools.uploadFile(
@@ -37,9 +37,21 @@ function createApp() {
                 result:"ok",
                 err:err
               });
+              callback(err);
             });
       });
-    });
+    }
+    var srcUrl = decodeURIComponent(req.query.url);
+    if (req.query.readability=="true") {
+      pdfTools.convertToReadable(srcUrl, function(err, readableResult, cleanupFunc) {
+        toPdf(readableResult.tempFile, readableResult.title, cleanupFunc);
+      });
+    } else {
+      toPdf(srcUrl, req.query.title, function(){
+
+      });
+    }
+
 
 
 

@@ -49,7 +49,7 @@ describe('Website', function(){
 		  });
 	});
 
-  it('should GET /convertPage', function(done) {
+  it('should GET /convertPage with readability and webdav', function(done) {
     var receivedRequest = null;
     expectMockPostRequest(function(err, req){
       receivedRequest = req
@@ -59,7 +59,8 @@ describe('Website', function(){
         .use(jsonp)
         .query({
           url:"https://en.wikipedia.org/wiki/Portable_Document_Format",
-          title:"Portable Document Format <>>><<>!",
+          title:"Portable Document Format <>WITH READABILITY<>!",
+          readability:true,
           onFinish: {
             webdav: {
               username:"testuser",
@@ -73,17 +74,48 @@ describe('Website', function(){
           expect(receivedRequest).to.be.ok;
           expect(receivedRequest.files.file).to.be.ok;
           var file = receivedRequest.files.file;
-          expect(file.size).to.be.greaterThan(20000);
+          expect(file.size).to.be.greaterThan(46000);
           expect(file.name).to.equal("Portable Document Format.pdf");
           console.log(file.path);
           //fs.unlinkSync(file.path);
           done(err);
         });
     });
-
   });
 
-
+  it('should GET /convertPage without readability and with webdav', function(done) {
+    var receivedRequest = null;
+    expectMockPostRequest(function(err, req){
+      receivedRequest = req
+    }, function(err, mockUrl) {
+      request(app)
+        .get('/convertPage')
+        .use(jsonp)
+        .query({
+          url:"https://en.wikipedia.org/wiki/Portable_Document_Format",
+          title:"Portable Document Format WITHOUT READABILITY|||<<<!",
+          readability:false,
+          onFinish: {
+            webdav: {
+              username:"testuser",
+              password:"testpassword",
+              url:mockUrl
+            }
+          }
+        })
+        .expect(200, function(err, res){
+          expect(err).to.not.be.ok;
+          expect(receivedRequest).to.be.ok;
+          expect(receivedRequest.files.file).to.be.ok;
+          var file = receivedRequest.files.file;
+          expect(file.size).to.be.greaterThan(38000);
+          expect(file.name).to.equal("Portable Document Format WITHOUT READABILITY!.pdf");
+          console.log(file.path);
+          //fs.unlinkSync(file.path);
+          done(err);
+        });
+    });
+  });
 
 	
 });
