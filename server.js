@@ -31,7 +31,7 @@ function createApp() {
         pdfTools.uploadFile(
           req.query.onFinish.webdav.url,
           req.query.onFinish.webdav.username,
-          req.query.onFinish.webdav.password,
+          pdfdify.encrypt.decrypt(req.query.onFinish.webdav.password),
           path.basename(pdfFilePath), pdfFilePath, function(err, result) {
             res.jsonp({
               filename:path.basename(pdfFilePath),

@@ -6,6 +6,12 @@ var jsonp = require('superagent-jsonp');
 var chai = require('chai');
 chai.should();
 var expect = chai.expect;
+var basicAuth = require('basic-auth');
+
+process.env.PDFDIFY_SECRET = "fasldfkasjdfkw23123dasd";
+
+var pdfdify = require('../lib');
+
 
 function expectMockPostRequest(callbackRequest, callbackCreated) {
   var express = require('express');
@@ -38,14 +44,13 @@ describe('Website', function(){
 
 	before(function(done) {
 		app = require('../server')();
-		setTimeout(done, 1000);
+		setTimeout(done, 3000);
 	});
 
 	it('should GET /', function(done) {
 	  request(app)
 		  .get('/')
 		  .expect(200, /bookmarklet/, function(err, res){
-		  	expect(err).to.not.be.ok;
 		    done(err);
 		  });
 	});
@@ -65,7 +70,7 @@ describe('Website', function(){
           onFinish: {
             webdav: {
               username:"testuser",
-              password:"testpassword",
+              password:pdfdify.encrypt.encrypt("testpassword"),
               url:mockUrl
             }
           }
@@ -78,6 +83,11 @@ describe('Website', function(){
           expect(file.size).to.be.greaterThan(46000);
           expect(file.name).to.equal("Portable Document Format.pdf");
           console.log(file.path);
+          var auth = basicAuth(receivedRequest);
+          console.log(auth);
+          expect(auth.name).to.equal('testuser');
+          expect(auth.pass).to.equal('testpassword');
+
           fs.unlinkSync(file.path);
           done(err);
         });
@@ -99,7 +109,7 @@ describe('Website', function(){
           onFinish: {
             webdav: {
               username:"testuser",
-              password:"testpassword",
+              password:pdfdify.encrypt.encrypt("testpassword"),
               url:mockUrl
             }
           }
@@ -118,5 +128,21 @@ describe('Website', function(){
     });
   });
 
-	
+  xit('should GET /convertPage without readability and with webdav', function(done) {
+    request(app)
+      .get('/convertPage')
+      .use(jsonp)
+      .query({
+        url:"https://en.wikipedia.org/wiki/Portable_Document_Format",
+        title:"Portable Document Format Redirect",
+        onFinish: {
+          open:true
+        }
+      })
+      .expect(200, function(err, res){
+        expect(err).to.not.be.ok;
+        expect(res.body).to.be.ok;
+        done(err);
+      });
+  });
 });

@@ -7,6 +7,9 @@
   "env": {
     "READABILITY_PARSER_API_KEY": {
       "value": "examplekey"
+    },
+    "PDFDIFY_SECRET": {
+      "generator": "secret"
     }
   }
 
