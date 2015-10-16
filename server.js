@@ -37,7 +37,9 @@ function createApp() {
                 result:"ok",
                 err:err
               });
-              callback(err);
+              fs.unlink(pdfFilePath, function(err){
+                callback(err);
+              });
             });
       });
     }

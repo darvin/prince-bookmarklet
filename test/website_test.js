@@ -77,7 +77,7 @@ describe('Website', function(){
           expect(file.size).to.be.greaterThan(46000);
           expect(file.name).to.equal("Portable Document Format.pdf");
           console.log(file.path);
-          //fs.unlinkSync(file.path);
+          fs.unlinkSync(file.path);
           done(err);
         });
     });
@@ -111,7 +111,7 @@ describe('Website', function(){
           expect(file.size).to.be.greaterThan(38000);
           expect(file.name).to.equal("Portable Document Format WITHOUT READABILITY!.pdf");
           console.log(file.path);
-          //fs.unlinkSync(file.path);
+          fs.unlinkSync(file.path);
           done(err);
         });
     });
