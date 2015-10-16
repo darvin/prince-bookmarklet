@@ -15,9 +15,10 @@ function expectMockPostRequest(callbackRequest, callbackCreated) {
 
   var urlPath = "/webdav/";
   app.put(urlPath+":filePath", multipartMiddleware, function (req, res) {
+    callbackRequest(null, req);
     res.send('ok');
     server.close(function () {
-      callbackRequest(null, req);
+
     });
 
   });
