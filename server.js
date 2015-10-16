@@ -5,7 +5,7 @@ var fs = require('fs');
 var url = require('url');
 var bookmarkletCompile = require('./lib').bookmarkletCompile;
 var pdfTools = require('./lib').pdfTools;
-
+var pdfdify = require('./lib');
 var DEBUG = true;
 
 
@@ -21,38 +21,28 @@ function createApp() {
 
   app.get('/convertPage', function (req, res) {
 
-    var toPdf = function (input, title, callback) {
-      pdfTools.convertToPdf({
-        input:input,
-        title:title
-      }, function(err, pdfFilePath) {
-        if (req.query.onFinish.webdav)
-          pdfTools.uploadFile(
-            req.query.onFinish.webdav.url,
-            req.query.onFinish.webdav.username,
-            req.query.onFinish.webdav.password,
-            path.basename(pdfFilePath), pdfFilePath, function(err, result) {
-              res.jsonp({
-                filename:path.basename(pdfFilePath),
-                result:"ok",
-                err:err
-              });
-              fs.unlink(pdfFilePath, function(err){
-                callback(err);
-              });
-            });
-      });
-    }
     var srcUrl = decodeURIComponent(req.query.url);
-    if (req.query.readability=="true") {
-      pdfTools.convertToReadable(srcUrl, function(err, readableResult, cleanupFunc) {
-        toPdf(readableResult.tempFile, readableResult.title, cleanupFunc);
-      });
-    } else {
-      toPdf(srcUrl, req.query.title, function(){
-
-      });
-    }
+    pdfdify.convert({
+      srcUrl:srcUrl,
+      readability:req.query.readability=="true",
+      title:req.query.title
+    }, function(err, pdfFilePath) {
+      if (req.query.onFinish.webdav)
+        pdfTools.uploadFile(
+          req.query.onFinish.webdav.url,
+          req.query.onFinish.webdav.username,
+          req.query.onFinish.webdav.password,
+          path.basename(pdfFilePath), pdfFilePath, function(err, result) {
+            res.jsonp({
+              filename:path.basename(pdfFilePath),
+              result:"ok",
+              err:err
+            });
+            fs.unlink(pdfFilePath, function(err){
+              callback(err);
+            });
+          });
+    });
 
 
 
