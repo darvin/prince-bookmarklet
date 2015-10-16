@@ -145,4 +145,27 @@ describe('Website', function(){
         done(err);
       });
   });
+  xit('should GET /convertPage without readability and with webdav', function(done) {
+    request(app)
+      .get('/bookmarkletLink.txt')
+      .query()
+      .use(jsonp)
+      .query({
+        opts:{
+          readability:true,
+          onFinish: {
+            webdav: {
+              username:"testuser",
+              password:pdfdify.encrypt.encrypt("testpassword"),
+              url:mockUrl
+            }
+          }
+        }
+      })
+      .expect(200, function(err, res){
+        expect(err).to.not.be.ok;
+        expect(res.body).to.be.ok;
+        done(err);
+      });
+  });
 });

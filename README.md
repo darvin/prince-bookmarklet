@@ -4,11 +4,9 @@ Converts webpages to PDF with PrinceXML and pushes it to WebDAV
 
 ## Environment Variables
 
-`WEBDAV_USERNAME`
-`WEBDAV_PASSWORD`
-`WEBDAV_URL`
 
-
+`READABILITY_PARSER_API_KEY`
+`PDFDIFY_SECRET`
 
 
 ## Deployment on Heroku
