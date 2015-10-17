@@ -20,18 +20,18 @@ function createApp() {
   });
 
   app.get('/convertPage', function (req, res) {
-
+    var opts = req.query.opts;
     var srcUrl = decodeURIComponent(req.query.url);
     pdfdify.convert({
       srcUrl:srcUrl,
-      readability:req.query.readability=="true",
+      readability:opts.readability=="true",
       title:req.query.title
     }, function(err, pdfFilePath) {
-      if (req.query.onFinish.webdav)
+      if (opts.onFinish.webdav)
         pdfTools.uploadFile(
-          req.query.onFinish.webdav.url,
-          req.query.onFinish.webdav.username,
-          pdfdify.encrypt.decrypt(req.query.onFinish.webdav.password),
+          opts.onFinish.webdav.url,
+          opts.onFinish.webdav.username,
+          pdfdify.encrypt.decrypt(opts.onFinish.webdav.password),
           path.basename(pdfFilePath), pdfFilePath, function(err, result) {
             res.jsonp({
               filename:path.basename(pdfFilePath),

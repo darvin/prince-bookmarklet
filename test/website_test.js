@@ -66,12 +66,14 @@ describe('Website', function(){
         .query({
           url:"https://en.wikipedia.org/wiki/Portable_Document_Format",
           title:"Portable Document Format <>WITH READABILITY<>!",
-          readability:true,
-          onFinish: {
-            webdav: {
-              username:"testuser",
-              password:pdfdify.encrypt.encrypt("testpassword"),
-              url:mockUrl
+          opts: {
+            readability: true,
+            onFinish: {
+              webdav: {
+                username: "testuser",
+                password: pdfdify.encrypt.encrypt("testpassword"),
+                url: mockUrl
+              }
             }
           }
         })
@@ -105,12 +107,15 @@ describe('Website', function(){
         .query({
           url:"https://en.wikipedia.org/wiki/Portable_Document_Format",
           title:"Portable Document Format WITHOUT READABILITY|||<<<!",
-          readability:false,
-          onFinish: {
-            webdav: {
-              username:"testuser",
-              password:pdfdify.encrypt.encrypt("testpassword"),
-              url:mockUrl
+          opts: {
+
+            readability: false,
+            onFinish: {
+              webdav: {
+                username: "testuser",
+                password: pdfdify.encrypt.encrypt("testpassword"),
+                url: mockUrl
+              }
             }
           }
         })
@@ -135,8 +140,10 @@ describe('Website', function(){
       .query({
         url:"https://en.wikipedia.org/wiki/Portable_Document_Format",
         title:"Portable Document Format Redirect",
-        onFinish: {
-          open:true
+        opts: {
+          onFinish: {
+            open: true
+          }
         }
       })
       .expect(200, function(err, res){
