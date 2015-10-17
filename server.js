@@ -49,20 +49,27 @@ function createApp() {
 
   });
   bookmarkletCompile(function(err, bookmarklet, bookmarkletSource) {
+
+    var getBookmarkletForReq = function(src, req) {
+      var absoluteURL = "//"+req.get('host')+'/';
+
+      var result = src
+        .replace(new RegExp("XXX_absoluteURL_XXX", 'g'), absoluteURL)
+        .replace(new RegExp("XXX_opts_XXX", 'g'), JSON.stringify(req.query.opts));
+      return result;
+    };
+
+    app.get('/bookmarkletLink.txt', function(req,res) {
+      res.send(getBookmarkletForReq(bookmarklet, req));
+    });
+
     app.get('/', function (req, res) {
       //console.log(browserifiedBookmarkletSource);
-      var absoluteURL = "//"+req.get('host')+req.originalUrl;
-
-      var bookmarkletLocalize=function(src){
-        var result = src;
-        result = src.replace(new RegExp("XXX_absoluteURL_XXX", 'g'), absoluteURL);
-        return result;
-      };
 
 
       hbs.engine(path.join(templateDir, "index.html"), {
-          bookmarklet:bookmarkletLocalize(bookmarklet),
-          bookmarkletSource:bookmarkletLocalize(bookmarkletSource)
+          bookmarklet:getBookmarkletForReq(bookmarklet, req),
+          bookmarkletSource:getBookmarkletForReq(bookmarkletSource,req)
       },
         function(err, html) {
         if (err)

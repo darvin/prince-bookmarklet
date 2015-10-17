@@ -128,7 +128,7 @@ describe('Website', function(){
     });
   });
 
-  xit('should GET /convertPage without readability and with webdav', function(done) {
+  xit('should GET /convertPage with "open"', function(done) {
     request(app)
       .get('/convertPage')
       .use(jsonp)
@@ -145,7 +145,7 @@ describe('Website', function(){
         done(err);
       });
   });
-  xit('should GET /convertPage without readability and with webdav', function(done) {
+  it('should GET /bookmarkletLink.txt without readability and with webdav', function(done) {
     request(app)
       .get('/bookmarkletLink.txt')
       .query()
@@ -157,14 +157,15 @@ describe('Website', function(){
             webdav: {
               username:"testuser",
               password:pdfdify.encrypt.encrypt("testpassword"),
-              url:mockUrl
             }
           }
         }
       })
       .expect(200, function(err, res){
         expect(err).to.not.be.ok;
-        expect(res.body).to.be.ok;
+        expect(res.text).to.match(/^javascript\:\(function/);
+        expect(res.text).to.not.match(/bookmarkletLink/);
+        expect(res.text).to.match(/testuser/);
         done(err);
       });
   });
