@@ -3,12 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <title>Prince XML Webpage to PDF bookmarklet</title>
+
+    <!-- If you delete this meta tag World War Z will become a reality -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <!-- If you are using the CSS version, only link these 2 files, you may add app.css to use for your overrides if you like -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/foundation/5.5.3/css/foundation.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/foundation/5.5.3/css/normalize.min.css">
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.1.1/gh-fork-ribbon.min.css" />
+    <!--[if lt IE 9]>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.1.1/gh-fork-ribbon.ie.min.css" />
+    <![endif]-->
+
 </head>
 <body>
-<a href="{{{bookmarklet}}}">PDFdify</a>
+
+<div class="github-fork-ribbon-wrapper right">
+    <div class="github-fork-ribbon">
+        <a href="https://github.com/simonwhitaker/github-fork-ribbon-css">Fork me on GitHub</a>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="small-12 columns">
+        <div data-alert class="alert-box radius secondary">
+            <h1><a href="{{{bookmarklet}}}">PDFdify</a>
+            </h1>
+        </div>
+    </div>
+</div>
+
+<form>
+    <div class="row">
+        <div class="small-12 columns">
+        <input id="readability" type="checkbox"><label for="readability">Readability</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="small-12 columns">
+
+        <input id="open" type="checkbox"><label for="open">Open PDF</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="small-12 columns">
+
+            <input id="webDav" type="checkbox"><label for="webDav">Upload on WebDav</label>
+        </div>
+    </div>
+    <div class="row" id="webDavOptions">
+            <div class="medium-6 large-4 columns">
+
+            <label>Username
+                <input type="text" placeholder="Username" />
+            </label>
+            </div>
+
+            <div class="medium-6 large-4 columns">
+
+            <label>Password
+                <input type="password" placeholder="Password" />
+            </label>
+            </div>
+            <div class="medium-12 large-4 columns">
+
+            <label>URL
+                <input type="text" placeholder="URL" />
+            </label>
+            </div>
+        </div>
+</form>
+
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/foundation/5.5.3/js/vendor/jquery.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/foundation/5.5.3/js/foundation/foundation.min.js"></script>
+<script>
+    $(document).foundation();
+</script>
+
+
+
+
 </body>
 
-<script>
-    {{{bookmarkletSource}}}
-</script>
+
 </html>

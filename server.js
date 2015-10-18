@@ -20,14 +20,14 @@ function createApp() {
   });
 
   app.get('/convertPage', function (req, res) {
-    var opts = req.query.opts;
+    var opts = req.query.opts || {};
     var srcUrl = decodeURIComponent(req.query.url);
     pdfdify.convert({
       srcUrl:srcUrl,
       readability:opts.readability=="true",
       title:req.query.title
     }, function(err, pdfFilePath) {
-      if (opts.onFinish.webdav)
+      if (opts.onFinish && opts.onFinish.webdav)
         pdfTools.uploadFile(
           opts.onFinish.webdav.url,
           opts.onFinish.webdav.username,
@@ -42,7 +42,7 @@ function createApp() {
               callback(err);
             });
           });
-      else if (opts.onFinish.open) {
+      else if (opts.onFinish && opts.onFinish.open) {
         fs.stat(pdfFilePath, function(err, stat){
           res.writeHead(200, {
             'Content-Type': 'application/pdf',
@@ -53,6 +53,8 @@ function createApp() {
           readStream.pipe(res);
 
         });
+      } else {
+        res.send("specify onFinish");
       }
     });
 
