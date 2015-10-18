@@ -133,7 +133,7 @@ describe('Website', function(){
     });
   });
 
-  xit('should GET /convertPage with "open"', function(done) {
+  it('should GET /convertPage with "open"', function(done) {
     request(app)
       .get('/convertPage')
       .use(jsonp)
@@ -149,6 +149,8 @@ describe('Website', function(){
       .expect(200, function(err, res){
         expect(err).to.not.be.ok;
         expect(res.body).to.be.ok;
+        expect(res.headers['content-type']).to.equal('application/pdf');
+        expect(res.headers['content-length']).to.be.greaterThan(1000);
         done(err);
       });
   });

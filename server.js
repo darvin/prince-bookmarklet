@@ -42,6 +42,18 @@ function createApp() {
               callback(err);
             });
           });
+      else if (opts.onFinish.open) {
+        fs.stat(pdfFilePath, function(err, stat){
+          res.writeHead(200, {
+            'Content-Type': 'application/pdf',
+            'Content-Length': stat.size
+          });
+          var readStream = fs.createReadStream(pdfFilePath);
+          // We replaced all the event handlers with a simple call to readStream.pipe()
+          readStream.pipe(res);
+
+        });
+      }
     });
 
 
