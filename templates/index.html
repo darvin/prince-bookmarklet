@@ -27,54 +27,64 @@
 </div>
 
 
-<div class="row">
+<div class="row panel">
     <div class="small-12 columns">
-        <div data-alert class="alert-box radius secondary">
-            <h1><a href="{{{bookmarklet}}}">PDFdify</a>
+            <h1><a class="button expand" id="bookmarkletLink">PDFdify</a>
             </h1>
-        </div>
+    </div>
+    <div class="small-12 columns">
+        <p class="text-center">
+            <em>(drag me into bookmarks)</em>
+        </p>
     </div>
 </div>
 
-<form>
+<form id="bookmarkletForm">
     <div class="row">
         <div class="small-12 columns">
-        <input id="readability" type="checkbox"><label for="readability">Readability</label>
+        <input id="readability" type="checkbox" checked><label for="readability">Readability</label>
         </div>
     </div>
     <div class="row">
         <div class="small-12 columns">
 
-        <input id="open" type="checkbox"><label for="open">Open PDF</label>
+        <input id="open" type="checkbox" checked><label for="open">Open PDF</label>
         </div>
     </div>
     <div class="row">
         <div class="small-12 columns">
 
-            <input id="webDav" type="checkbox"><label for="webDav">Upload on WebDav</label>
+            <input id="webdav" type="checkbox"><label for="webDav">Upload on WebDav</label>
         </div>
     </div>
-    <div class="row" id="webDavOptions">
+    <div class="row hide" id="webdavOptions" >
             <div class="medium-6 large-4 columns">
 
             <label>Username
-                <input type="text" placeholder="Username" />
+                <input id="webdavUsername" type="text" placeholder="Username" />
             </label>
             </div>
 
             <div class="medium-6 large-4 columns">
 
             <label>Password
-                <input type="password" placeholder="Password" />
+                <input id="webdavPassword" type="password" placeholder="Password" />
             </label>
             </div>
             <div class="medium-12 large-4 columns">
 
             <label>URL
-                <input type="text" placeholder="URL" />
+                <input id="webdavURL" type="url" placeholder="URL" />
             </label>
             </div>
         </div>
+    <div class="row">
+        <div class="small-12 columns">
+
+            <button id="submitButton" type="submit" class="button expand" >Generate!</button>
+        </div>
+    </div>
+
 </form>
 
 
@@ -84,6 +94,46 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/foundation/5.5.3/js/foundation/foundation.min.js"></script>
 <script>
     $(document).foundation();
+    $(document).ready(function() {
+        $("#webdav").change(function() {
+           if ($("#webdav").prop( "checked")) {
+               $("#webdavOptions").removeClass("hide");
+           } else {
+               $("#webdavOptions").addClass("hide");
+           }
+        });
+    });
+
+    var processForm = function() {
+        var opts = {
+            readability: $("#readability").prop("checked"),
+            onFinish: {
+                open: $("#open").prop("checked")
+            }
+        };
+
+        if ($("#webdav").prop("checked")) {
+            opts.onFinish.webdav = {
+                username: $("#webdavUsername").val(),
+                password: $("#webdavPassword").val(),
+                url: $("#webdavURL").val()
+            }
+        }
+
+        $.get( "/bookmarkletLink.txt", {
+            opts:opts
+        }, function( data ) {
+            $("#bookmarkletLink").attr("href", data);
+        });
+    };
+    processForm();
+    $( "#bookmarkletForm" ).submit(function( event ) {
+        processForm();
+        event.preventDefault();
+
+    });
+
+
 </script>
 
 

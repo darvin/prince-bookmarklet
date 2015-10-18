@@ -74,6 +74,12 @@ function createApp() {
     };
 
     app.get('/bookmarkletLink.txt', function(req,res) {
+      if (req.query.opts &&
+        req.query.opts.onFinish &&
+        req.query.opts.onFinish.webdav &&
+        req.query.opts.onFinish.webdav.password) {
+        req.query.opts.onFinish.webdav.password = pdfdify.encrypt.encrypt(req.query.opts.onFinish.webdav.password);
+      }
       res.send(getBookmarkletForReq(bookmarklet, req));
     });
 

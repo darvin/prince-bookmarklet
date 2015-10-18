@@ -165,7 +165,7 @@ describe('Website', function(){
           onFinish: {
             webdav: {
               username:"testuser",
-              password:pdfdify.encrypt.encrypt("testpassword"),
+              password:"testpassword"
             }
           }
         }
@@ -175,6 +175,7 @@ describe('Website', function(){
         expect(res.text).to.match(/^javascript\:\(function/);
         expect(res.text).to.not.match(/bookmarkletLink/);
         expect(res.text).to.match(/testuser/);
+        //expect(res.text).to.match(new RegExp(pdfdify.encrypt.encrypt("testpassword")));
         done(err);
       });
   });
