@@ -26,7 +26,7 @@ function createApp() {
       srcUrl:srcUrl,
       readability:opts.readability=="true",
       title:req.query.title
-    }, function(err, pdfFilePath) {
+    }, function(err, cleanup, pdfFilePath) {
       if (opts.onFinish && opts.onFinish.webdav)
         pdfTools.uploadFile(
           opts.onFinish.webdav.url,
@@ -38,9 +38,7 @@ function createApp() {
               result:"ok",
               err:err
             });
-            fs.unlink(pdfFilePath, function(err){
-
-            });
+            cleanup();
           });
       else if (opts.onFinish && opts.onFinish.open) {
         fs.stat(pdfFilePath, function(err, stat){
@@ -51,10 +49,13 @@ function createApp() {
           var readStream = fs.createReadStream(pdfFilePath);
           // We replaced all the event handlers with a simple call to readStream.pipe()
           readStream.pipe(res);
-
+          readStream.on('end', function() {
+            cleanup();
+          });
         });
       } else {
         res.send("specify onFinish");
+        cleanup();
       }
     });
 
