@@ -20,6 +20,7 @@
     "bookmarkleter": "^0.2.2",
     "browserify": "^11.2.0",
     "concat-stream": "^1.5.0",
+    "cryp": "^0.1.1",
     "express": "^4.13.3",
     "jquery": "^2.1.4",
     "node-handlebars": "^0.9.7",

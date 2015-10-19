@@ -39,7 +39,7 @@ function createApp() {
               err:err
             });
             fs.unlink(pdfFilePath, function(err){
-              callback(err);
+
             });
           });
       else if (opts.onFinish && opts.onFinish.open) {
