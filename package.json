@@ -24,6 +24,7 @@
     "express": "^4.13.3",
     "jquery": "^2.1.4",
     "node-handlebars": "^0.9.7",
+    "node-readability": "^2.1.0",
     "noty": "^2.3.7",
     "prince": "^1.1.6",
     "readability-api": "^0.4.0",
