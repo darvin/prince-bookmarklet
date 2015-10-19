@@ -64,6 +64,48 @@ describe('Website', function(){
         .get('/convertPage')
         .use(jsonp)
         .query({
+          url:"http://howtonode.org/coding-challenges-with-streams",
+          title:"Bad Title <>WITH READABILITY<>!",
+          opts: {
+            readability: true,
+            onFinish: {
+              webdav: {
+                username: "testuser",
+                password: pdfdify.encrypt.encrypt("testpassword"),
+                url: mockUrl
+              }
+            }
+          }
+        })
+        .expect(200, function(err, res){
+          expect(err).to.not.be.ok;
+          expect(receivedRequest).to.be.ok;
+          expect(receivedRequest.files.file).to.be.ok;
+          var file = receivedRequest.files.file;
+          expect(file.size).to.be.greaterThan(46000);
+          expect(file.name).to.equal("Solving Coding Challenges with Streams.pdf");
+          console.log(file.path);
+          var auth = basicAuth(receivedRequest);
+          console.log(auth);
+          expect(auth.name).to.equal('testuser');
+          expect(auth.pass).to.equal('testpassword');
+
+          fs.unlinkSync(file.path);
+          done(err);
+        });
+    });
+  });
+
+
+  it('should GET /convertPage on wikipedia with dummy readability and webdav', function(done) {
+    var receivedRequest = null;
+    expectMockPostRequest(function(err, req){
+      receivedRequest = req
+    }, function(err, mockUrl) {
+      request(app)
+        .get('/convertPage')
+        .use(jsonp)
+        .query({
           url:"https://en.wikipedia.org/wiki/Portable_Document_Format",
           title:"Portable Document Format <>WITH READABILITY<>!",
           opts: {
@@ -83,7 +125,7 @@ describe('Website', function(){
           expect(receivedRequest.files.file).to.be.ok;
           var file = receivedRequest.files.file;
           expect(file.size).to.be.greaterThan(46000);
-          expect(file.name).to.equal("Portable Document Format.pdf");
+          expect(file.name).to.equal("Portable Document Format WITH READABILITY!.pdf");
           console.log(file.path);
           var auth = basicAuth(receivedRequest);
           console.log(auth);
