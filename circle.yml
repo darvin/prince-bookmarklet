@@ -3,3 +3,8 @@ deployment:
     branch: master
     heroku:
       appname: pdfdify
+
+
+machine:
+  node:
+    version: 4.2.1
