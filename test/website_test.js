@@ -219,6 +219,20 @@ describe('Website', function(){
       });
   });
 
+  it('should POST /encrypt', function(done) {
+    request(app)
+      .post('/encrypt')
+      .send({
+        string:"mypassword"
+      })
+      .expect(200, function(err, res){
+        expect(err).to.not.be.ok;
+        expect(res.body).to.be.ok;
+        expect(res.body.encrypted).to.be.ok;
+        done(err);
+      });
+  });
+
   it('should GET /bookmarkletLink.txt without readability and with webdav', function(done) {
     request(app)
       .get('/bookmarkletLink.txt')

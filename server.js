@@ -70,6 +70,11 @@ function createApp() {
   app.get('/convertPage', convertHandler);
   app.post('/convertPage', bodyParser.json(), convertHandler);
 
+
+  app.post('/encrypt', bodyParser.json(), function(req, res) {
+    var string = req.body.string;
+    res.json({encrypted:pdfdify.encrypt.encrypt(string)});
+  });
   bookmarkletCompile(function(err, bookmarklet, bookmarkletSource) {
 
     var getBookmarkletForReq = function(src, req) {
