@@ -24,6 +24,11 @@ function createApp() {
   var convertHandler = function(req,res) {
     var opts = req.query.opts||req.body.opts||{};
     var srcUrl = decodeURIComponent(req.query.url||req.body.url);
+
+    console.log("QUERY: ", JSON.stringify(req.query));
+    console.log("BODY: ", JSON.stringify(req.body));
+
+
     pdfdify.convert({
       srcUrl:srcUrl,
       readability:opts.readability=="true",
