@@ -21,7 +21,7 @@ function createApp() {
   });
 
 
-  var convertHandler = function(req,res) {
+  var convertHandler = function(req,res, responceFunction) {
     var opts = req.query.opts||req.body.opts||{};
     var srcUrl = decodeURIComponent(req.query.url||req.body.url);
 
@@ -40,7 +40,7 @@ function createApp() {
           opts.onFinish.webdav.username,
           pdfdify.encrypt.decrypt(opts.onFinish.webdav.password),
           path.basename(pdfFilePath), pdfFilePath, function(err, result) {
-            res.jsonp({
+            res[responceFunction]({
               filename:path.basename(pdfFilePath),
               result:"ok",
               err:err
@@ -61,14 +61,14 @@ function createApp() {
           });
         });
       } else {
-        res.send("specify onFinish");
+        res[responceFunction]({error:"specify onFinish"});
         cleanup();
       }
     });
   };
 
-  app.get('/convertPage', convertHandler);
-  app.post('/convertPage', bodyParser.json(), convertHandler);
+  app.get('/convertPage', function(req,res) { convertHandler(req, res, "jsonp")});
+  app.post('/convertPage', bodyParser.json(), function(req,res) { convertHandler(req, res, "json")});
 
 
   app.post('/encrypt', bodyParser.json(), function(req, res) {
