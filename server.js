@@ -1,6 +1,7 @@
 var express = require('express');
 var handlebars = require("node-handlebars");
 var path = require('path');
+var bodyParser = require('body-parser')
 var fs = require('fs');
 var url = require('url');
 var bookmarkletCompile = require('./lib').bookmarkletCompile;
@@ -19,13 +20,14 @@ function createApp() {
     partialsDir :path.join(templateDir, "partials")
   });
 
-  app.get('/convertPage', function (req, res) {
-    var opts = req.query.opts || {};
-    var srcUrl = decodeURIComponent(req.query.url);
+
+  var convertHandler = function(req,res) {
+    var opts = req.query.opts||req.body.opts||{};
+    var srcUrl = decodeURIComponent(req.query.url||req.body.url);
     pdfdify.convert({
       srcUrl:srcUrl,
       readability:opts.readability=="true",
-      title:req.query.title
+      title:req.query.title||req.body.title
     }, function(err, cleanup, pdfFilePath) {
       if (opts.onFinish && opts.onFinish.webdav)
         pdfTools.uploadFile(
@@ -58,11 +60,11 @@ function createApp() {
         cleanup();
       }
     });
+  };
 
+  app.get('/convertPage', convertHandler);
+  app.post('/convertPage', bodyParser.json(), convertHandler);
 
-
-
-  });
   bookmarkletCompile(function(err, bookmarklet, bookmarkletSource) {
 
     var getBookmarkletForReq = function(src, req) {

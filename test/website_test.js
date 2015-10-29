@@ -196,6 +196,29 @@ describe('Website', function(){
         done(err);
       });
   });
+
+
+  it('should POST /convertPage with "open"', function(done) {
+    request(app)
+      .post('/convertPage')
+      .send({
+        url:"https://en.wikipedia.org/wiki/Portable_Document_Format",
+        title:"Portable Document Format Redirect",
+        opts: {
+          onFinish: {
+            open: true
+          }
+        }
+      })
+      .expect(200, function(err, res){
+        expect(err).to.not.be.ok;
+        expect(res.body).to.be.ok;
+        expect(res.headers['content-type']).to.equal('application/pdf');
+        expect(res.headers['content-length']).to.be.greaterThan(1000);
+        done(err);
+      });
+  });
+
   it('should GET /bookmarkletLink.txt without readability and with webdav', function(done) {
     request(app)
       .get('/bookmarkletLink.txt')
